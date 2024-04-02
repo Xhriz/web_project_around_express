@@ -1,34 +1,10 @@
 const router = require('express').Router();
+const userController = require('../controllers/users');
 
-const fs = require('fs');
-
-const path = require('path');
-
-router.get('/users', (req, res) => {
-  const userPath = path.join(__dirname, '../data/users.json');
-  fs.readFile(userPath, { encoding: 'utf-8' }, (err, data) => {
-    if (err) {
-      res.send(err);
-    }
-    const user = JSON.parse(data);
-    res.json(user);
-  });
-});
-
-router.get('/users/:id', (req, res) => {
-  const userPath = path.join(__dirname, '../data/users.json');
-  fs.readFile(userPath, { encoding: 'utf-8' }, (err, data) => {
-    if (err) {
-      res.send(err);
-    }
-    const userId = JSON.parse(data);
-    const selectUser = userId.find((user) => user._id === req.params.id);
-    if (!selectUser) {
-      res.status(404).send({ message: 'ID do usuário não encontrado' });
-    } else {
-      res.send(selectUser);
-    }
-  });
-});
+router.post('/users', userController.createUser);
+router.get('/users', userController.getUsers);
+router.get('/users/:userId', userController.getUsersId);
+router.patch('/users/me', userController.updateUser);
+router.patch('/users/me/avatar', userController.updateAvatar);
 
 module.exports = router;
